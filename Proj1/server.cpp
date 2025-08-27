@@ -19,7 +19,7 @@ int main() {
     struct sockaddr_in servaddr, cliaddr; 
       
     // Creating socket file descriptor 
-    if ( (sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) { 
+    if ( (sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_IP)) < 0 ) { 
         perror("socket creation failed"); 
         exit(EXIT_FAILURE); 
     } 
@@ -29,9 +29,13 @@ int main() {
       
     // Filling server information 
     servaddr.sin_family    = AF_INET; // IPv4 
-    servaddr.sin_addr.s_addr = INADDR_ANY; 
     servaddr.sin_port = htons(PORT); 
-      
+
+    if (inet_pton(AF_INET, "15.0.0.129", &servaddr.sin_addr) <= 0) {
+        perror("inet_pton failed");
+        exit(EXIT_FAILURE);
+    }
+  
     // Bind the socket with the server address 
     if ( bind(sockfd, (const struct sockaddr *)&servaddr,  
             sizeof(servaddr)) < 0 ) 
