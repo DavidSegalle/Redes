@@ -31,7 +31,7 @@ int main() {
     servaddr.sin_family    = AF_INET; // IPv4 
     servaddr.sin_port = htons(PORT); 
 
-    if (inet_pton(AF_INET, "15.0.0.129", &servaddr.sin_addr) <= 0) {
+    if (inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr) <= 0) {
         perror("inet_pton failed");
         exit(EXIT_FAILURE);
     }

@@ -24,7 +24,7 @@ int main() {
     std::string input, ip, port, msg;
     // TODO: UNCOMMENT
     //getline(std::cin, input); // Defaults to stop at newline
-    input = "15.0.0.1:8080/test.txt";
+    input = "127.0.0.1:8080/test.txt";
     stringstream ss(input);
 
     getline(ss, ip, ':');
@@ -52,7 +52,7 @@ int main() {
       
     // Filling server information 
     servaddr.sin_family = AF_INET; 
-    uint_16_t port_int(std::stoi(port));
+    uint16_t port_int(std::stoi(port));
     servaddr.sin_port = htons(port_int); 
     
     if (inet_pton(AF_INET, ip.data(), &servaddr.sin_addr) <= 0) {
@@ -70,6 +70,7 @@ int main() {
             sizeof(servaddr)); 
     std::cout<<"Hello message sent."<<std::endl; 
           
+    // Colocar timeout aqui
     n = recvfrom(sockfd, (char *)buffer, MAXLINE,  
                 MSG_WAITALL, (struct sockaddr *) &servaddr, 
                 &len); 
