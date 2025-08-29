@@ -1,13 +1,14 @@
+#pragma once
 
 
-enum ClientRequests{
-    getfile = "getf";
-    getid = "geti";
-    getchecksum = "getc";
-}
+namespace ClientRequests{
+    const char* getfile = "getf";
+    const char* getid = "geti";
+    const char* getchecksum = "getc";
+};
 
-enum ServerRequests{
-    packetinfo = "pinf";
-    packetdata = "pdat";
-    sendchecktum = "setc";
-}
+namespace ServerRequests{
+    const char* packetinfo = "pinf";
+    const char* packetdata = "pdat";
+    const char* sendchecktum = "setc";
+};

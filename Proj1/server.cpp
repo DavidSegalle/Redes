@@ -2,30 +2,35 @@
 #include <bits/stdc++.h> 
 #include <stdlib.h> 
 #include <unistd.h> 
-#include <string.h> 
+#include <string> 
 #include <sys/types.h> 
 #include <sys/socket.h> 
 #include <arpa/inet.h> 
 #include <netinet/in.h>
 #include "message_headers.hpp"
+#include "process_request.hpp"
   
 #define PORT     8080 
 #define MAXLINE 1024
 
-bool analyse_message(string msg){
-
-    enum ClientRequests requests;
-
+std::string respond(std::string msg){
+    ProcReq processor;
     // The message has to be at least the request
     if(msg.length() <= 4){
-        return false;
+        return std::string();
     }
 
-    if(msg.substr(0, 4) == requests.getfile){
-        
+    if(msg.substr(0, 4) == ClientRequests::getfile){
+        std::cout << "getfile request received" << "\n";
+        processor.process_getfile_req(msg);
     }
 
-    return true;
+    else if(msg.substr(0, 4) == ClientRequests::getid){
+        std::cout << "get nth packet request received" << "\n";
+        processor.process_getfile_req(msg);
+    }
+
+    return std::string();
 }
 
   
@@ -72,9 +77,9 @@ int main() {
     
     buffer[n] = '\0'; // Adding for safety, not necessary 
     printf("Client : %s\n", buffer);
-    string msg(buffer);
+    std::string req(buffer);
 
-    analyse_message(buffer);
+    respond(req);
 
     const char *hello = "Hello from server"; 
     sendto(sockfd, (const char *)hello, strlen(hello),  
