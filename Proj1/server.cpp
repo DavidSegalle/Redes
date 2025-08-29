@@ -6,16 +6,32 @@
 #include <sys/types.h> 
 #include <sys/socket.h> 
 #include <arpa/inet.h> 
-#include <netinet/in.h> 
+#include <netinet/in.h>
+#include "message_headers.hpp"
   
 #define PORT     8080 
-#define MAXLINE 1024 
+#define MAXLINE 1024
+
+bool analyse_message(string msg){
+
+    enum ClientRequests requests;
+
+    // The message has to be at least the request
+    if(msg.length() <= 4){
+        return false;
+    }
+
+    if(msg.substr(0, 4) == requests.getfile){
+        
+    }
+
+    return true;
+}
+
   
-// Driver code 
 int main() { 
     int sockfd; 
     char buffer[MAXLINE]; 
-    const char *hello = "Hello from server"; 
     struct sockaddr_in servaddr, cliaddr; 
       
     // Creating socket file descriptor 
@@ -42,18 +58,25 @@ int main() {
     { 
         perror("bind failed"); 
         exit(EXIT_FAILURE); 
-    } 
+    }
       
     socklen_t len;
   int n; 
   
     len = sizeof(cliaddr);  //len is value/result 
   
+    // Receives request
     n = recvfrom(sockfd, (char *)buffer, MAXLINE,  
                 MSG_WAITALL, ( struct sockaddr *) &cliaddr, 
-                &len); 
-    buffer[n] = '\0'; 
-    printf("Client : %s\n", buffer); 
+                &len);
+    
+    buffer[n] = '\0'; // Adding for safety, not necessary 
+    printf("Client : %s\n", buffer);
+    string msg(buffer);
+
+    analyse_message(buffer);
+
+    const char *hello = "Hello from server"; 
     sendto(sockfd, (const char *)hello, strlen(hello),  
         MSG_CONFIRM, (const struct sockaddr *) &cliaddr, 
             len); 

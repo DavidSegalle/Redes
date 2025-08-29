@@ -21,15 +21,19 @@ int main() {
 
     std::cout << "Insert the get request in the format: IP_Servidor:Porta_Servidor/nome_do_arquivo.txt: ";
 
-    std::string input, ip, port, msg;
+    std::string input, ip, port, packet, msg;
     // TODO: UNCOMMENT
     //getline(std::cin, input); // Defaults to stop at newline
     input = "127.0.0.1:8080/test.txt";
     stringstream ss(input);
 
+    packet += "getf\n";
+
     getline(ss, ip, ':');
     getline(ss, port, '/');
     getline(ss, msg); // Defaults to stop at newline
+
+    packet += msg;
 
     if(!(ip.length() && port.length() && msg.length())){
         std::cout << "Found empty value from\nIP: " << ip << "\nPort: " << port <<"\nfile: " << msg << std::endl;
@@ -63,12 +67,11 @@ int main() {
     socklen_t len; 
     
     char buffer[MAXLINE]; 
-    const char *hello = "Hello from client";
 
-    sendto(sockfd, (const char *)hello, strlen(hello), 
+    sendto(sockfd, (const char *)packet.data(), packet.length(), 
         MSG_CONFIRM, (const struct sockaddr *) &servaddr,  
             sizeof(servaddr)); 
-    std::cout<<"Hello message sent."<<std::endl; 
+    std::cout<<"Request for the file has been sent."<<std::endl; 
           
     // Colocar timeout aqui
     n = recvfrom(sockfd, (char *)buffer, MAXLINE,  
