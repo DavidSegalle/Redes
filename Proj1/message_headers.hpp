@@ -1,14 +1,16 @@
 #pragma once
 
+#define MSG_LENGTH 1024
+#define REQ_LENGTH 4
 
-namespace ClientRequests{
-    const char* getfile = "getf";
-    const char* getid = "geti";
-    const char* getchecksum = "getc";
-};
+namespace ClientRequests {
+    inline constexpr const char* getfile = "getf";
+    inline constexpr const char* getid = "geti";
+    inline constexpr const char* getchecksum = "getc";
+}
 
-namespace ServerRequests{
-    const char* packetinfo = "pinf";
-    const char* packetdata = "pdat";
-    const char* sendchecktum = "setc";
-};
+namespace ServerRequests {
+    inline constexpr const char* packetinfo = "pinf";
+    inline constexpr const char* packetdata = "pdat";
+    inline constexpr const char* sendchecktum = "setc";
+}

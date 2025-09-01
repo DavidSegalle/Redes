@@ -4,10 +4,13 @@
 #include <iostream>
 #include <sstream>
 
+#include "file_manager.hpp"
+
 class ProcessRequest{
 
 public:
     
+    ProcessRequest();
     // Server side processing
     std::string getFileInfo (std::string msg);
     std::string getPacket   (std::string msg);
@@ -19,6 +22,8 @@ public:
     std::string rcvChecksum  (std::string msg);
 
 private:
-    std::string loaded_textfile;
+    std::vector<std::string> loaded_textfile;
+
+    FileManager file_manager;
 
 };

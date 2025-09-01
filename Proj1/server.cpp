@@ -7,6 +7,7 @@
 #include <sys/socket.h> 
 #include <arpa/inet.h> 
 #include <netinet/in.h>
+
 #include "message_headers.hpp"
 #include "process_request.hpp"
   
@@ -14,7 +15,7 @@
 #define MAXLINE 1024
 
 std::string respond(std::string msg){
-    ProcReq processor;
+    ProcessRequest processor;
     // The message has to be at least the request
     if(msg.length() <= 4){
         return std::string();
@@ -22,12 +23,17 @@ std::string respond(std::string msg){
 
     if(msg.substr(0, 4) == ClientRequests::getfile){
         std::cout << "getfile request received" << "\n";
-        processor.process_getfile_req(msg);
+        processor.getFileInfo(msg);
     }
 
     else if(msg.substr(0, 4) == ClientRequests::getid){
         std::cout << "get nth packet request received" << "\n";
-        processor.process_getfile_req(msg);
+        processor.getPacket(msg);
+    }
+
+    else if(msg.substr(0, 4) == ClientRequests::getchecksum){
+        std::cout << "get checksum request received" << "\n";
+        processor.getChecksum(msg);
     }
 
     return std::string();
