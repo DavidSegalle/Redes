@@ -2,6 +2,7 @@
 
 #define MSG_LENGTH 1024
 #define REQ_LENGTH 4
+#define CHECKSUM_LENGTH 4
 
 namespace ClientRequests {
     inline constexpr const char* getfile = "getf";

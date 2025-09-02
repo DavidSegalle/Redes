@@ -14,8 +14,10 @@
 #define PORT     8080 
 #define MAXLINE 1024
 
+ProcessRequest processor;
+
 std::string respond(std::string msg){
-    ProcessRequest processor;
+    
     // The message has to be at least the request
     if(msg.length() <= 4){
         return std::string();

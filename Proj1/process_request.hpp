@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include "file_manager.hpp"
+#include "message_headers.hpp"
 
 class ProcessRequest{
 

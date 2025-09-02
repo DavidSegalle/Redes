@@ -66,9 +66,13 @@ int main() {
     int n;
     socklen_t len; 
     
-    char buffer[MAXLINE]; 
+    char buffer[MAXLINE];
 
-    //packet = "geti\ntest.txt\n1\n";
+    for(int i = 0; i < MAXLINE; i++){
+        buffer[i] = '\0';
+    }
+
+    //packet = "geti\ntest.txt\n0\n";
 
     sendto(sockfd, (const char *)packet.data(), packet.length(), 
         MSG_CONFIRM, (const struct sockaddr *) &servaddr,  
@@ -80,7 +84,23 @@ int main() {
                 MSG_WAITALL, (struct sockaddr *) &servaddr, 
                 &len); 
     buffer[n] = '\0'; 
-    std::cout<<"Server :"<<buffer<<std::endl; 
+    std::cout<<"Server :"<<buffer<<std::endl;
+
+    for(int i = 0; i < MAXLINE; i++){
+        buffer[i] = '\0';
+    }
+    packet = "geti\ntest.txt\n1\n";
+    sendto(sockfd, (const char *)packet.data(), packet.length(), 
+        MSG_CONFIRM, (const struct sockaddr *) &servaddr,  
+            sizeof(servaddr)); 
+    std::cout<<"Request for the packet has been sent."<<std::endl; 
+          
+    // Colocar timeout aqui
+    n = recvfrom(sockfd, (char *)buffer, MAXLINE,  
+                MSG_WAITALL, (struct sockaddr *) &servaddr, 
+                &len); 
+    buffer[n] = '\0';
+    std::cout<<"Server :"<<buffer<<std::endl;
   
     close(sockfd); 
     return 0; 

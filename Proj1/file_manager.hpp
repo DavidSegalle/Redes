@@ -19,9 +19,11 @@ public:
     // Server side processing
     bool file_exists(std::string filename);
 
-    std::vector<std::string> load_file(std::string filename);
+    std::vector<std::string> loadFileChunks(std::string filename);
+
+    std::string getChecksum(std::string text_block);
 
 private:
-
+    std::string loadFile(std::string filename);
 
 };
