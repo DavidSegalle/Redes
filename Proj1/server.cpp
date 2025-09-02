@@ -28,12 +28,12 @@ std::string respond(std::string msg){
 
     else if(msg.substr(0, 4) == ClientRequests::getid){
         std::cout << "get nth packet request received" << "\n";
-        processor.getPacket(msg);
+        return processor.getPacket(msg);
     }
 
     else if(msg.substr(0, 4) == ClientRequests::getchecksum){
         std::cout << "get checksum request received" << "\n";
-        processor.getChecksum(msg);
+        return processor.getChecksum(msg);
     }
 
     return std::string();
@@ -72,29 +72,27 @@ int main() {
     }
       
     socklen_t len;
-  int n; 
+    int n; 
   
     len = sizeof(cliaddr);  //len is value/result 
   
     // Receives request
-    n = recvfrom(sockfd, (char *)buffer, MAXLINE,  
-                MSG_WAITALL, ( struct sockaddr *) &cliaddr, 
-                &len);
-    
-    buffer[n] = '\0'; // Adding for safety, not necessary 
-    printf("Client : %s\n", buffer);
-    std::string req(buffer);
+    while(true){
+        n = recvfrom(sockfd, (char *)buffer, MAXLINE,  
+                    MSG_WAITALL, ( struct sockaddr *) &cliaddr, 
+                    &len);
+        
+        buffer[n] = '\0'; // Adding for safety, not necessary 
+        printf("Client : %s\n", buffer);
+        std::string req(buffer);
 
-    std::string reply = respond(req);
+        std::string reply = respond(req);
 
-    sendto(sockfd, reply.c_str(), reply.length(),  
-       MSG_CONFIRM, (const struct sockaddr *) &cliaddr, 
-           len); 
-    //const char *hello = "Hello from server"; 
-    //sendto(sockfd, (const char *)hello, strlen(hello),  
-    //    MSG_CONFIRM, (const struct sockaddr *) &cliaddr, 
-    //        len); 
-    std::cout<<"Reply sent."<<std::endl;  
-      
+        sendto(sockfd, reply.c_str(), reply.length(),  
+        MSG_CONFIRM, (const struct sockaddr *) &cliaddr, 
+            len); 
+
+        std::cout<<"Reply sent."<<std::endl;  
+    }  
     return 0; 
 }

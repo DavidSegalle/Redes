@@ -68,6 +68,8 @@ int main() {
     
     char buffer[MAXLINE]; 
 
+    //packet = "geti\ntest.txt\n1\n";
+
     sendto(sockfd, (const char *)packet.data(), packet.length(), 
         MSG_CONFIRM, (const struct sockaddr *) &servaddr,  
             sizeof(servaddr)); 

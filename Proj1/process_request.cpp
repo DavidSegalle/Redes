@@ -22,7 +22,7 @@ std::string ProcessRequest::getFileInfo(std::string msg){
     std::string reply = "pinf\n";
     reply += filename + "\n";
     reply += std::to_string(loaded_textfile.size()) + "\n";
-    
+
     return reply;
 
 }
@@ -37,17 +37,13 @@ std::string ProcessRequest::getPacket(std::string msg){
     getline(ss, filename, '\n');
     getline(ss, packet_id, '\n');
 
-    std::cout << "Received a request for packet number " << packet_id << " for the file " << filename;
-
-    // Se loaded_textfile existir e for grande o suficiente pra o ID especificado Pegar o loaded_textfile e retornar o bloco adequado
+    std::cout << "Received a request for packet number " << packet_id << " for the file " << filename << "\n";
 
     if(!loaded_textfile.empty() && loaded_textfile.size() > (long unsigned int)std::stoi(packet_id)){
         return loaded_textfile[std::stoi(packet_id)];
     }
 
-    // Placeholder
-    std::string test = "";
-    return test;
+    return std::string("pdat\n0\n");
 }
 
 std::string ProcessRequest::getChecksum(std::string msg){
