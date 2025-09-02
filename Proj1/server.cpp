@@ -23,7 +23,7 @@ std::string respond(std::string msg){
 
     if(msg.substr(0, 4) == ClientRequests::getfile){
         std::cout << "getfile request received" << "\n";
-        processor.getFileInfo(msg);
+        return processor.getFileInfo(msg);
     }
 
     else if(msg.substr(0, 4) == ClientRequests::getid){
@@ -85,13 +85,16 @@ int main() {
     printf("Client : %s\n", buffer);
     std::string req(buffer);
 
-    respond(req);
+    std::string reply = respond(req);
 
-    const char *hello = "Hello from server"; 
-    sendto(sockfd, (const char *)hello, strlen(hello),  
-        MSG_CONFIRM, (const struct sockaddr *) &cliaddr, 
-            len); 
-    std::cout<<"Hello message sent."<<std::endl;  
+    sendto(sockfd, reply.c_str(), reply.length(),  
+       MSG_CONFIRM, (const struct sockaddr *) &cliaddr, 
+           len); 
+    //const char *hello = "Hello from server"; 
+    //sendto(sockfd, (const char *)hello, strlen(hello),  
+    //    MSG_CONFIRM, (const struct sockaddr *) &cliaddr, 
+    //        len); 
+    std::cout<<"Reply sent."<<std::endl;  
       
     return 0; 
 }

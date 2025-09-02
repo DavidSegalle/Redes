@@ -19,8 +19,11 @@ std::string ProcessRequest::getFileInfo(std::string msg){
     
     loaded_textfile = file_manager.load_file(filename);
 
-    // Placeholder (put correct message)
-    return std::string();
+    std::string reply = "pinf\n";
+    reply += filename + "\n";
+    reply += std::to_string(loaded_textfile.size()) + "\n";
+    
+    return reply;
 
 }
 
@@ -38,14 +41,16 @@ std::string ProcessRequest::getPacket(std::string msg){
 
     // Se loaded_textfile existir e for grande o suficiente pra o ID especificado Pegar o loaded_textfile e retornar o bloco adequado
 
-    if(!loaded_textfile.empty() && loaded_textfile.size() > std::stoi(packet_id))
+    if(!loaded_textfile.empty() && loaded_textfile.size() > (long unsigned int)std::stoi(packet_id)){
+        return loaded_textfile[std::stoi(packet_id)];
+    }
 
-    // Plasceholder
-    return std::string();
+    // Placeholder
+    std::string test = "";
+    return test;
 }
 
 std::string ProcessRequest::getChecksum(std::string msg){
-
 
     std::string filename = msg.substr(5);
 
