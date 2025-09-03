@@ -1,13 +1,13 @@
 # Custom Protocol
 
-The first 4 letter character is the type of message
+The first 4 letter character is the type of message as defined in message_headers.hpp
 
 ### First request contains
 
 - getf (getfile)
-- textfilename
+- textfilename up to 64 characters
 
-All in form getf'\n'textfilename'\n'
+All in form 4 bytes for getf, 64 bytes for getftextfilename followed by '\0''\0''\0'
 
 ### Server returns
 
@@ -15,7 +15,8 @@ All in form getf'\n'textfilename'\n'
 - Number of packets that are required to send the data (0 if file does not exist)
 - Size of last packet
 
-All in form: pin'\n'packet_count'\n'last_size'\n'
+All in form: 4 bytes with pinf 64 bytes for packet name 4 bytes for packet_count followed by '\0''\0''\0'
+
 Here the server must load the file into memory to avoid issues
 
 ### Client sends
@@ -24,7 +25,7 @@ Here the server must load the file into memory to avoid issues
 - textfilename
 - Requested packet ID
 
-All in form: getI'\n'textfilename'\n'number'\n' <- This \n will be converted to '\0' by the server
+All in form: 4 bytes for geti 64 bytes for textfilename 4 bytes for packet id being requested, followed by '\0''\0'
 
 ### Server returns
 
@@ -33,14 +34,4 @@ All in form: getI'\n'textfilename'\n'number'\n' <- This \n will be converted to 
 - Packet Id
 - File block
 
-All in form: pdat'\n'textfilename'\n'ID'\n'data'\n'.
-
-### Client sends
-
-- getc (get checksum)
-- Textfilename
-- Checksum request
-
-All in form: getc'\n'textfilename'\n'check_req'\n'
-
-Unload file from memory
+All in form: 4 bytes for pdat, 64 bytes for textfilename, 4 bytes for packet id, rest for data except last 4 for checksum.
