@@ -4,6 +4,21 @@
 
 FileManager::FileManager(){}
 
+std::string FileManager::packetToString(int num){ // Number is stored backwards
+    if(num >= 26*26*26 || num < 0){
+        return std::string("FFF");
+    }
+
+    std::string value = "aaa";
+
+    for(int i = 0; i < REQ_LENGTH; i++){
+        value[i] += num % 26;
+        num /= 26;
+    }
+
+    return value;
+}
+
 std::string FileManager::loadFile(std::string filename){
 
     std::filesystem::path dir ("files");
@@ -33,17 +48,32 @@ std::string FileManager::getChecksum(std::string text_block){
         value[i] = 0;
     }
 
+    int digit = 0;
     for(int i = 0; i < text_block.size(); i++){
+        
+        digit = text_block[i];
+    
+        value[0] += digit % 26;
 
-        // Fazer com mod 26 e somar a em tudo no final
-        int sum = value[0] + (int) text_block[i];
+        for(int j = 0; j < CHECKSUM_LENGTH; j++){
+            
+            if(value[j] > 26){
 
-        value[0] += text_block[i] % 26;
-        for(int j = 1; j < CHECKSUM_LENGTH; j++){
+                value[j] %= 26;
+
+                if((j + 1) <= CHECKSUM_LENGTH){
+                    value[j+1]++;
+                }
+            }
         }
+        
     }
 
-    return std::string("");
+    for(int i = 0; i < CHECKSUM_LENGTH; i++){
+        value[i] += 'a';
+    }
+
+    return std::string(value);
 }
 
 bool FileManager::file_exists(std::string filename){
@@ -61,7 +91,7 @@ std::vector<std::string> FileManager::loadFileChunks(std::string filename){
     std::string loaded_file = this->loadFile(filename);
 
     // In form:  pdat'\n'textfilename'\n'ID'\n'data'\0'.
-    int block_textsize = MSG_LENGTH - REQ_LENGTH - CHECKSUM_LENGTH - filename.length() - 5/* number of \n */ - 3 /*maxfile is 999 blocks so 3 bits*/;
+    int block_textsize = MSG_LENGTH - REQ_LENGTH - CHECKSUM_LENGTH - filename.length() - 5/* number of \n */ - 3 /*maxfile is zzz blocks so 3 bites max*/;
 
     int blocks = 1 + loaded_file.length() / block_textsize;
 
@@ -79,11 +109,11 @@ std::vector<std::string> FileManager::loadFileChunks(std::string filename){
         // Colocar a checksum aqui
         std::string current_block = loaded_file.substr(i * block_textsize, block_textsize);
 
-        std::string checksum = this->getChecksum(current_block);
+        text_block += std::string("\n") + current_block + std::string("\n");
+        
+        std::string checksum = this->getChecksum(text_block);
 
-        text_block += "\n" + std::string("\n") + current_block;
-
-        separated_file.push_back(text_block);
+        separated_file.push_back(text_block += checksum);
 
         //std::cout << text_block << "\nwas loaded" << "\n";
     }

@@ -11,10 +11,10 @@ CLIENT_SRCS := $(filter-out server.cpp,$(SRCS))
 all: server client
 
 server: $(SERVER_SRCS)
-	$(CXX) $(CXXFLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS) $^ -o $(@).o
 
 client: $(CLIENT_SRCS)
-	$(CXX) $(CXXFLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS) $^ -o $(@).o
 
 clean:
 	rm -f server client *.o

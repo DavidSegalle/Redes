@@ -23,6 +23,8 @@ public:
 
     std::string getChecksum(std::string text_block);
 
+    std::string packetToString(int i);
+
 private:
     std::string loadFile(std::string filename);
 

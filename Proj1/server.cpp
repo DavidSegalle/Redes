@@ -33,11 +33,6 @@ std::string respond(std::string msg){
         return processor.getPacket(msg);
     }
 
-    else if(msg.substr(0, 4) == ClientRequests::getchecksum){
-        std::cout << "get checksum request received" << "\n";
-        return processor.getChecksum(msg);
-    }
-
     return std::string();
 }
 

@@ -89,7 +89,7 @@ int main() {
     for(int i = 0; i < MAXLINE; i++){
         buffer[i] = '\0';
     }
-    packet = "geti\ntest.txt\n1\n";
+    packet = "geti\ntest.txt\n0\n";
     sendto(sockfd, (const char *)packet.data(), packet.length(), 
         MSG_CONFIRM, (const struct sockaddr *) &servaddr,  
             sizeof(servaddr)); 
