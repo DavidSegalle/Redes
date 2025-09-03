@@ -4,28 +4,29 @@
 
 ProcessRequest::ProcessRequest(){}
 
-std::string ProcessRequest::getFileInfo(std::string msg){
+void ProcessRequest::getFileInfo(char* msg, char* reply){
 
-    std::string filename = msg.substr(5);
+    char filename[FILENAME_LENGTH];
+    strncpy(filename, msg+PACKET_REQ_LENGTH, FILENAME_LENGTH);
 
-    std::cout << "Received a file request for: " << filename << "\n";
+    std::cout << "Filename is: " << filename << "\n";
 
     // Check if file exists, if so return adequate answer
     if(!file_manager.file_exists(filename)){
         // File does not exist reply
-        return std::string(ServerRequests::packetinfo) + "\n0";
+        
     }
-    
+    /*
     // Load file to vector<string>
     loaded_textfile = file_manager.loadFileChunks(filename);
 
     // Create server reply
-    std::string reply = ServerRequests::packetinfo;
+    std::string reply = ServerResponses::packetinfo;
     reply += "\n" + filename + "\n";
 
     reply += file_manager.packetToString(loaded_textfile.size()) + "\n";
 
-    return reply;
+    return reply;*/
 
 }
 

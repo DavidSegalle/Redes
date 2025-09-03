@@ -11,10 +11,10 @@ std::string FileManager::packetToString(int num){ // Number is stored backwards
 
     std::string value = "aaa";
 
-    for(int i = 0; i < REQ_LENGTH; i++){
+    /*for(int i = 0; i < REQ_LENGTH; i++){
         value[i] += num % 26;
         num /= 26;
-    }
+    }*/
 
     return value;
 }
@@ -76,13 +76,22 @@ std::string FileManager::getChecksum(std::string text_block){
     return std::string(value);
 }
 
-bool FileManager::file_exists(std::string filename){
+bool FileManager::file_exists(char* filename){
 
-    std::filesystem::path dir ("files");
-    std::filesystem::path full_path = dir / filename.data();
+    if (access(filename, F_OK) == 0) {
+        std::cout << "File does indeed exist\n";
+        return true;
+    }
+    std::cout << "File does not exist, replying with error\n";
+    return false;
+
+    /*std::filesystem::path dir ("files");
+    std::string name(filename);
+    std::cout << name << std::endl;
+    std::filesystem::path full_path = dir / name.data();
 
     struct stat buffer;
-    return (stat (full_path.c_str(), &buffer) == 0);
+    return (stat (full_path.c_str(), &buffer) == 0);*/
 
 }
 
@@ -91,8 +100,8 @@ std::vector<std::string> FileManager::loadFileChunks(std::string filename){
     std::string loaded_file = this->loadFile(filename);
 
     // In form:  pdat'\n'textfilename'\n'ID'\n'data'\0'.
-    int block_textsize = MSG_LENGTH - REQ_LENGTH - CHECKSUM_LENGTH - filename.length() - 5/* number of \n */ - 3 /*maxfile is zzz blocks so 3 bites max*/;
-
+    //int block_textsize = MSG_LENGTH - REQ_LENGTH - CHECKSUM_LENGTH - filename.length() - 5/* number of \n */ - 3 /*maxfile is zzz blocks so 3 bites max*/;
+int block_textsize=0;
     int blocks = 1 + loaded_file.length() / block_textsize;
 
     std::vector<std::string> separated_file;
@@ -101,7 +110,7 @@ std::vector<std::string> FileManager::loadFileChunks(std::string filename){
         std::cout << "Loading block number " << i << '\n';
         
         std::string text_block;
-        text_block += ServerRequests::packetdata;
+        text_block += ServerResponses::packetdata;
         text_block += '\n' + filename + "\n";
         text_block += std::to_string(i);
 

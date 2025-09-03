@@ -3,6 +3,7 @@
 #include <string> 
 #include <iostream>
 #include <sstream>
+#include <string.h>
 
 #include "file_manager.hpp"
 #include "message_headers.hpp"
@@ -13,7 +14,7 @@ public:
     
     ProcessRequest();
     // Server side processing
-    std::string getFileInfo (std::string msg);
+    void getFileInfo (char* msg, char* reply);
     std::string getPacket   (std::string msg);
     //std::string getChecksum (std::string msg);
 

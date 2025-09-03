@@ -24,7 +24,7 @@ int main() {
     std::string input, ip, port, packet, msg;
     // TODO: UNCOMMENT
     //getline(std::cin, input); // Defaults to stop at newline
-    input = "127.0.0.1:8080/test.txt";
+    input = "127.0.0.1:8080/tesdt.txt";
     stringstream ss(input);
 
     packet += "getf\n";
@@ -89,7 +89,7 @@ int main() {
     for(int i = 0; i < MAXLINE; i++){
         buffer[i] = '\0';
     }
-    packet = "geti\ntest.txt\n0\n";
+    packet = "getitest.txt0";
     sendto(sockfd, (const char *)packet.data(), packet.length(), 
         MSG_CONFIRM, (const struct sockaddr *) &servaddr,  
             sizeof(servaddr)); 

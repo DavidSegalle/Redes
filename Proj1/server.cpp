@@ -3,6 +3,7 @@
 #include <stdlib.h> 
 #include <unistd.h> 
 #include <string> 
+#include <string.h>
 #include <sys/types.h> 
 #include <sys/socket.h> 
 #include <arpa/inet.h> 
@@ -12,34 +13,35 @@
 #include "process_request.hpp"
   
 #define PORT     8080 
-#define MAXLINE 1024
 
 ProcessRequest processor;
 
-std::string respond(std::string msg){
-    
-    // The message has to be at least the request
-    if(msg.length() <= 4){
-        return std::string();
+void respond(char* msg, char* reply){
+
+    char req_type[PACKET_REQ_LENGTH];
+
+    strncpy(req_type, msg, PACKET_REQ_LENGTH);
+
+    std::cout << "Received a request of type: " << req_type << "\n";
+
+    if(!memcmp(ClientRequests::getfile, req_type, PACKET_REQ_LENGTH)){
+        processor.getFileInfo(msg, reply);
     }
 
-    if(msg.substr(0, 4) == ClientRequests::getfile){
-        std::cout << "getfile request received" << "\n";
-        return processor.getFileInfo(msg);
+    else if(!memcmp(ClientRequests::getid, req_type, PACKET_REQ_LENGTH)){
+        //processor.getPacket(msg, reply);
     }
 
-    else if(msg.substr(0, 4) == ClientRequests::getid){
-        std::cout << "get nth packet request received" << "\n";
-        return processor.getPacket(msg);
+    else{
+        strcpy(reply, ServerResponses::errorreply);
     }
 
-    return std::string();
 }
 
   
 int main() { 
     int sockfd; 
-    char buffer[MAXLINE]; 
+    char buffer[MSG_LENGTH]; 
     struct sockaddr_in servaddr, cliaddr; 
       
     // Creating socket file descriptor 
@@ -74,18 +76,27 @@ int main() {
     len = sizeof(cliaddr);  //len is value/result 
   
     // Receives request
+    
     while(true){
-        n = recvfrom(sockfd, (char *)buffer, MAXLINE,  
+
+        for(int i = 0; i < MSG_LENGTH; i++){
+            buffer[i] = 0;
+        }
+
+        n = recvfrom(sockfd, (char *)buffer, MSG_LENGTH,  
                     MSG_WAITALL, ( struct sockaddr *) &cliaddr, 
                     &len);
         
-        buffer[n] = '\0'; // Adding for safety, not necessary 
-        printf("Client : %s\n", buffer);
-        std::string req(buffer);
+        printf("Client sent: %s\n", buffer);
 
-        std::string reply = respond(req);
+        char reply[MSG_LENGTH];
+        for(int i = 0; i < MSG_LENGTH; i++){
+            reply[i] = 0;
+        }
 
-        sendto(sockfd, reply.c_str(), reply.length(),  
+        respond(buffer, reply);
+
+        sendto(sockfd, reply, MSG_LENGTH,  
         MSG_CONFIRM, (const struct sockaddr *) &cliaddr, 
             len); 
 

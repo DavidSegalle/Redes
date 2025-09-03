@@ -17,7 +17,7 @@ public:
     
     FileManager();
     // Server side processing
-    bool file_exists(std::string filename);
+    bool file_exists(char* filename);
 
     std::vector<std::string> loadFileChunks(std::string filename);
 
