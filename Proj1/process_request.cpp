@@ -4,6 +4,41 @@
 
 ProcessRequest::ProcessRequest(){}
 
+void ProcessRequest::setChecksum(Message* msg){
+
+    uint32_t checksum = 0;
+
+    for(int i = 0; i < MSG_LENGTH - CHECKSUM_LENGTH; i++){
+        checksum += msg->raw_data[i];
+    }
+
+    memcpy(&(msg->raw_data[MSG_LENGTH - CHECKSUM_LENGTH]), &checksum, PACKET_ID_LENGTH);
+
+}
+
+bool ProcessRequest::checkChecksum(Message* msg){
+
+    uint32_t rcv_checksum = 0;
+
+    memcpy(&rcv_checksum, &msg->raw_data[MSG_LENGTH - CHECKSUM_LENGTH], CHECKSUM_LENGTH);
+
+    this->setChecksum(msg);
+
+    uint32_t new_checksum = 0;
+
+    memcpy(&new_checksum, &msg->raw_data[MSG_LENGTH - CHECKSUM_LENGTH], CHECKSUM_LENGTH);
+
+    if(new_checksum == rcv_checksum){
+        std::cout << "Checksum is correct\n";
+        return true;
+    }
+
+    std::cout << "Checksum is wrong\n";
+        return false;
+
+
+}
+
 void ProcessRequest::getFileInfo(GetFile* msg, SendFileInfo* reply){
 
     std::cout << "Filename is: " << msg->filename << "\n";
@@ -13,6 +48,8 @@ void ProcessRequest::getFileInfo(GetFile* msg, SendFileInfo* reply){
     memcpy(reply->filename, msg->filename, FILENAME_LENGTH);
     
     file_manager.fileChunkCount(msg->filename, reply->packet_count);
+
+    std::cout << reply->packet_count << "\n";
 
 }
 

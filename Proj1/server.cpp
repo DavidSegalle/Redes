@@ -18,10 +18,17 @@ ProcessRequest processor;
 
 void respond(Message* req, Message* reply){
 
+    if(!processor.checkChecksum(req)){
+        // Reply with received error message
+    }
+
     if(!memcmp(ClientRequests::getfile, req->type, PACKET_REQ_LENGTH)){
         //std::cout << "Black Magic" << std::endl;
         processor.getFileInfo(&req->get_file, &reply->send_file_info);
     }
+
+    // Depois de montar a resposta colocar a checksum
+    processor.setChecksum(reply);
 
     /*strncpy(req_type, msg, PACKET_REQ_LENGTH);
 
@@ -91,17 +98,18 @@ int main() {
         std::cout << "Received message of length: " << n << "\nWith the contents: ";
         std::cout.write(req.raw_data, MSG_LENGTH) << "\n";
 
+        // Teóricamente desnecessário pois a checksum considera o lixo
         for(int i = 0; i < MSG_LENGTH; i++){
             reply.raw_data[i] = 0;
         }
 
         respond(&req, &reply);
 
-        /*sendto(sockfd, reply, MSG_LENGTH,  
+        sendto(sockfd, &reply.raw_data, MSG_LENGTH,  
         MSG_CONFIRM, (const struct sockaddr *) &cliaddr, 
-            len); 
+            len);
 
-        std::cout<<"Reply sent."<<std::endl;  */
+        std::cout<<"Reply sent."<<std::endl;
     }  
     return 0; 
 }

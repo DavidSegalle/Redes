@@ -23,6 +23,9 @@ public:
     std::string rcvPacketData (std::string msg);
     std::string rcvChecksum  (std::string msg);
 
+    void setChecksum(Message* msg);
+    bool checkChecksum(Message* msg);
+
 private:
     std::vector<std::string> loaded_textfile;
 

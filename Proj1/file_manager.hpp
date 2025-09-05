@@ -31,4 +31,6 @@ public:
 private:
     std::string loadFile(std::string filename);
 
+    void setPacketCount(char* chunk_count, uint32_t count);
+
 };

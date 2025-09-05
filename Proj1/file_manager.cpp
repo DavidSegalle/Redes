@@ -4,8 +4,13 @@
 
 FileManager::FileManager(){}
 
+void FileManager::setPacketCount(char* chunk_count, uint32_t count){
+    memcpy(chunk_count, &count, PACKET_ID_LENGTH);
+}
+
 void FileManager::fileChunkCount(char* filename, char* chunk_count){
     
+    // If file does not exist it says the contents are 0 packets long
     if(!this->file_exists(filename)){
         for(int i = 0; i < PACKET_ID_LENGTH; i++){
             chunk_count[i] = 0;
@@ -13,8 +18,10 @@ void FileManager::fileChunkCount(char* filename, char* chunk_count){
     }
 
     // Load file to memory, divide by DATA_LENGTH, do array magic to put the number into chunk_count.
+    uint32_t count = 69 + 70 * 256; // This is just an example for testing
 
-
+    this->setPacketCount(chunk_count, count);
+    
 }
 
 std::string FileManager::packetToString(int num){ // Number is stored backwards
