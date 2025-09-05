@@ -4,6 +4,19 @@
 
 FileManager::FileManager(){}
 
+void FileManager::fileChunkCount(char* filename, char* chunk_count){
+    
+    if(!this->file_exists(filename)){
+        for(int i = 0; i < PACKET_ID_LENGTH; i++){
+            chunk_count[i] = 0;
+        }
+    }
+
+    // Load file to memory, divide by DATA_LENGTH, do array magic to put the number into chunk_count.
+
+
+}
+
 std::string FileManager::packetToString(int num){ // Number is stored backwards
     if(num >= 26*26*26 || num < 0){
         return std::string("FFF");
@@ -78,20 +91,20 @@ std::string FileManager::getChecksum(std::string text_block){
 
 bool FileManager::file_exists(char* filename){
 
-    if (access(filename, F_OK) == 0) {
+    int folder_len = 6;
+
+    char full_name[FILENAME_LENGTH + folder_len];
+
+    strcpy(full_name, "files/");
+
+    strcpy(full_name + folder_len, filename);
+
+    if (access(full_name, F_OK) == 0) {
         std::cout << "File does indeed exist\n";
         return true;
     }
-    std::cout << "File does not exist, replying with error\n";
+    std::cout << "File does not exist\n";
     return false;
-
-    /*std::filesystem::path dir ("files");
-    std::string name(filename);
-    std::cout << name << std::endl;
-    std::filesystem::path full_path = dir / name.data();
-
-    struct stat buffer;
-    return (stat (full_path.c_str(), &buffer) == 0);*/
 
 }
 

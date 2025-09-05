@@ -14,7 +14,7 @@ public:
     
     ProcessRequest();
     // Server side processing
-    void getFileInfo (char* msg, char* reply);
+    void getFileInfo(GetFile* msg, SendFileInfo* reply);
     std::string getPacket   (std::string msg);
     //std::string getChecksum (std::string msg);
 

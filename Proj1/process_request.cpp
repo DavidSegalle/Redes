@@ -4,29 +4,15 @@
 
 ProcessRequest::ProcessRequest(){}
 
-void ProcessRequest::getFileInfo(char* msg, char* reply){
+void ProcessRequest::getFileInfo(GetFile* msg, SendFileInfo* reply){
 
-    char filename[FILENAME_LENGTH];
-    strncpy(filename, msg+PACKET_REQ_LENGTH, FILENAME_LENGTH);
+    std::cout << "Filename is: " << msg->filename << "\n";
 
-    std::cout << "Filename is: " << filename << "\n";
-
-    // Check if file exists, if so return adequate answer
-    if(!file_manager.file_exists(filename)){
-        // File does not exist reply
-        
-    }
-    /*
-    // Load file to vector<string>
-    loaded_textfile = file_manager.loadFileChunks(filename);
-
-    // Create server reply
-    std::string reply = ServerResponses::packetinfo;
-    reply += "\n" + filename + "\n";
-
-    reply += file_manager.packetToString(loaded_textfile.size()) + "\n";
-
-    return reply;*/
+    // Set the data that won't change type to sending info on a packet
+    memcpy(reply->type, ServerResponses::packetinfo, PACKET_REQ_LENGTH);
+    memcpy(reply->filename, msg->filename, FILENAME_LENGTH);
+    
+    file_manager.fileChunkCount(msg->filename, reply->packet_count);
 
 }
 

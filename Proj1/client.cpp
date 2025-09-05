@@ -13,6 +13,8 @@
 #include <string.h>
 using namespace std;
 
+#include "message_headers.hpp"
+
 #define PORT     8080
 #define MAXLINE 1024 
   
@@ -21,19 +23,28 @@ int main() {
 
     std::cout << "Insert the get request in the format: IP_Servidor:Porta_Servidor/nome_do_arquivo.txt: ";
 
-    std::string input, ip, port, packet, msg;
+    std::string input, ip, port, msg;
     // TODO: UNCOMMENT
     //getline(std::cin, input); // Defaults to stop at newline
-    input = "127.0.0.1:8080/tesdt.txt";
+    input = "127.0.0.1:8080/test.txt";
     stringstream ss(input);
-
-    packet += "getf\n";
 
     getline(ss, ip, ':');
     getline(ss, port, '/');
     getline(ss, msg); // Defaults to stop at newline
 
-    packet += msg;
+    Message message;
+
+    // Remember to clear the message
+    for(int i = 0; i < MSG_LENGTH; i++){
+        message.raw_data[i] = '\0';
+    }
+
+    strncpy(message.type, "getf", PACKET_REQ_LENGTH);
+    strncpy(message.get_file.filename, msg.c_str(), FILENAME_LENGTH);
+    message.get_file.filename[FILENAME_LENGTH - 1] = '\0'; // Just making sure
+    // Falta calcular e colocar a checksum aqui no message.get_file.checksum
+
 
     if(!(ip.length() && port.length() && msg.length())){
         std::cout << "Found empty value from\nIP: " << ip << "\nPort: " << port <<"\nfile: " << msg << std::endl;
@@ -72,9 +83,7 @@ int main() {
         buffer[i] = '\0';
     }
 
-    //packet = "geti\ntest.txt\n0\n";
-
-    sendto(sockfd, (const char *)packet.data(), packet.length(), 
+    sendto(sockfd, &message, MSG_LENGTH, 
         MSG_CONFIRM, (const struct sockaddr *) &servaddr,  
             sizeof(servaddr)); 
     std::cout<<"Request for the file has been sent."<<std::endl; 
@@ -89,7 +98,7 @@ int main() {
     for(int i = 0; i < MAXLINE; i++){
         buffer[i] = '\0';
     }
-    packet = "getitest.txt0";
+    /*packet = "getitest.txt0";
     sendto(sockfd, (const char *)packet.data(), packet.length(), 
         MSG_CONFIRM, (const struct sockaddr *) &servaddr,  
             sizeof(servaddr)); 
@@ -102,6 +111,6 @@ int main() {
     buffer[n] = '\0';
     std::cout<<"Server :"<<buffer<<std::endl;
   
-    close(sockfd); 
+    close(sockfd); */
     return 0; 
 }

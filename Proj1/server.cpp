@@ -16,11 +16,14 @@
 
 ProcessRequest processor;
 
-void respond(char* msg, char* reply){
+void respond(Message* req, Message* reply){
 
-    char req_type[PACKET_REQ_LENGTH];
+    if(!memcmp(ClientRequests::getfile, req->type, PACKET_REQ_LENGTH)){
+        //std::cout << "Black Magic" << std::endl;
+        processor.getFileInfo(&req->get_file, &reply->send_file_info);
+    }
 
-    strncpy(req_type, msg, PACKET_REQ_LENGTH);
+    /*strncpy(req_type, msg, PACKET_REQ_LENGTH);
 
     std::cout << "Received a request of type: " << req_type << "\n";
 
@@ -34,14 +37,13 @@ void respond(char* msg, char* reply){
 
     else{
         strcpy(reply, ServerResponses::errorreply);
-    }
+    }*/
 
 }
 
   
 int main() { 
     int sockfd; 
-    char buffer[MSG_LENGTH]; 
     struct sockaddr_in servaddr, cliaddr; 
       
     // Creating socket file descriptor 
@@ -74,33 +76,32 @@ int main() {
     int n; 
   
     len = sizeof(cliaddr);  //len is value/result 
-  
-    // Receives request
+    
+    Message req, reply;
+    // Remember to clear the message
+    for(int i = 0; i < MSG_LENGTH; i++){
+        req.raw_data[i] = '\0';
+        reply.raw_data[i] = '\0';
+    }
     
     while(true){
 
+        n = recvfrom(sockfd, (char *)req.raw_data, MSG_LENGTH, MSG_WAITALL, ( struct sockaddr *) &cliaddr, &len);
+
+        std::cout << "Received message of length: " << n << "\nWith the contents: ";
+        std::cout.write(req.raw_data, MSG_LENGTH) << "\n";
+
         for(int i = 0; i < MSG_LENGTH; i++){
-            buffer[i] = 0;
+            reply.raw_data[i] = 0;
         }
 
-        n = recvfrom(sockfd, (char *)buffer, MSG_LENGTH,  
-                    MSG_WAITALL, ( struct sockaddr *) &cliaddr, 
-                    &len);
-        
-        printf("Client sent: %s\n", buffer);
+        respond(&req, &reply);
 
-        char reply[MSG_LENGTH];
-        for(int i = 0; i < MSG_LENGTH; i++){
-            reply[i] = 0;
-        }
-
-        respond(buffer, reply);
-
-        sendto(sockfd, reply, MSG_LENGTH,  
+        /*sendto(sockfd, reply, MSG_LENGTH,  
         MSG_CONFIRM, (const struct sockaddr *) &cliaddr, 
             len); 
 
-        std::cout<<"Reply sent."<<std::endl;  
+        std::cout<<"Reply sent."<<std::endl;  */
     }  
     return 0; 
 }
