@@ -121,35 +121,23 @@ bool FileManager::loadPacket(char* filename, char* area, char* index){
 
     int correct_name = memcmp(this->loaded_filename, filename, FILENAME_LENGTH);
 
-    // If no file is loaded
-    if(!this->loaded_file){
-        loaded = this->loadFile(filename);
-    }
-    // If the loaded file is not the correct one
-    // memcmp has 0 as the result for equal value, weird
-    else if(correct_name){
+    // If no file is loaded or the file loaded is not the requested one load the file
+    if(!this->loaded_file || correct_name){
         loaded = this->loadFile(filename);
     }
 
-    if(!loaded){
+    // If couldn't load or invalid index
+    if(!loaded || this->loaded_file_chunk_count < real_index){
         return false;
     }
 
-    if(this->loaded_file_chunk_count < real_index){
-        return false;
-    }
-
+    // If it's the last chunk don't seg fault
     if(real_index + 1 == this->loaded_file_chunk_count){
         memcpy(area, this->loaded_file + (real_index * DATA_LENGTH), this->last_chunk_size);
-        //std::cout.write(area, this->last_chunk_size);
     }
     else{
         memcpy(area, this->loaded_file + (real_index * DATA_LENGTH), DATA_LENGTH);
-        //std::cout.write(area, DATA_LENGTH);
     }
-
-    
-    std::cout << "\n";
 
     return true;
 

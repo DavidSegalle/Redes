@@ -121,8 +121,6 @@ int main() {
             sizeof(servaddr));
     std::cout<<"Request for the index has been sent."<<std::endl; 
 
-
-
     close(sockfd);
 
     return 0; 

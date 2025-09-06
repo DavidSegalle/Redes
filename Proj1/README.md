@@ -1,39 +1,68 @@
 # Custom Protocol
 
-The first 4 letter character is the type of message as defined in message_headers.hpp
+## Error handling
 
-- inva (for invalid request)
+### Server side
 
-### First request contains
+If checksum is invalid server simply won't respond.
 
-- getf (getfile)
-- textfilename up to 64 characters
+If a request is made for an invalid filename the server will respond with a message with empty filename.
 
-All in form 4 bytes for getf, 64 bytes for getftextfilename followed by '\0''\0''\0', checksum
+If a request is made for an invalid index of a file (file isn't big enough for the index) server will respond with empty filename and data fields.
 
-### Server returns
+### Client side
 
-- pinf (packet info)
-- Number of packets that are required to send the data (0 if file does not exist)
-- Size of last packet
+Not implemented.
 
-All in form: 4 bytes with pinf 64 bytes for packet name 4 bytes for packet_count followed by '\0''\0''\0', checksum
+## Message
 
-Here the server must load the file into memory to avoid issues
+All messages are 1024 bytes long filled with padding, all struct declarations are found in [this file](message_headers.hpp) and usage comes from typecasting the Message Union pointer.
 
-### Client sends
+### Get File
 
-- getI (getid)
-- textfilename
-- Requested packet ID
+Client sends this request. It is formatted as follows:
 
-All in form: 4 bytes for geti 64 bytes for textfilename 4 bytes for packet id being requested, followed by '\0''\0', checksum
+| Description       | Size     |
+|-------------------|----------|
+| file_request type | 4 bytes  |
+| filename          | 64 bytes |
+| checksum          | 4 bytes  |
+| padding           |          |
 
-### Server returns
+### Get index packet from file
 
-- pdat (packet data)
-- Textfilename(0) if not in memory
-- Packet Id
-- File block
+Client sends this request. It is formatted as follows:
 
-All in form: 4 bytes for pdat, 64 bytes for textfilename, 4 bytes for packet id, rest for data except last 4 for checksum.
+| Description | Size     |
+|-------------|----------|
+| getid type  | 4 bytes  |
+| filename    | 64 bytes |
+| index       |  4 bytes |
+| padding     |          |
+| checksum    | 4 bytes  |
+
+### Send file info
+
+Server sends this request. It is formatted as follows:
+
+| Description     | Size     |
+|-------------    |----------|
+| packetinfo type | 4 bytes  |
+| filename        | 64 bytes |
+| packet_count    | 4 bytes  |
+| last_chunk_size | 4 bytes  |
+| padding         |          |
+| checksum        | 4 bytes  |
+
+### Send file data
+
+Server sends this request. It is formatted as follows:
+
+| Description      | Size      |
+|-------------     |---------- |
+| packetdata type  | 4 bytes   |
+| filename         | 64 bytes  |
+| index            | 4 bytes   |
+| data             | 948 bytes |
+| padding if final |           |
+| checksum         | 4 bytes   |

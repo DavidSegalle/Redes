@@ -19,7 +19,6 @@ namespace ClientRequests {
 namespace ServerResponses {
     inline constexpr const char* packetinfo = "pinf";
     inline constexpr const char* packetdata = "pdat";
-    inline constexpr const char* errorreply = "inva";
 }
 
 // Ask the server for info on filename

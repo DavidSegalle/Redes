@@ -33,27 +33,12 @@ void respond(Message* req, Message* reply){
         std::cout << "Gathering a file packet\n";
         processor.getPacket(&req->get_index, &reply->send_file_data);
     }
+
     // Depois de montar a resposta colocar a checksum
     processor.setChecksum(reply);
 
     std::cout << "Full server message is:\n";
     std::cout.write(reply->raw_data, MSG_LENGTH);
-
-    /*strncpy(req_type, msg, PACKET_REQ_LENGTH);
-
-    std::cout << "Received a request of type: " << req_type << "\n";
-
-    if(!memcmp(ClientRequests::getfile, req_type, PACKET_REQ_LENGTH)){
-        processor.getFileInfo(msg, reply);
-    }
-
-    else if(!memcmp(ClientRequests::getid, req_type, PACKET_REQ_LENGTH)){
-        //processor.getPacket(msg, reply);
-    }
-
-    else{
-        strcpy(reply, ServerResponses::errorreply);
-    }*/
 
 }
 
@@ -102,15 +87,14 @@ int main() {
     
     while(true){
 
+        for(uint i = 0; i < MSG_LENGTH; i++){
+            reply.raw_data[i] = 0;
+        }
+
         n = recvfrom(sockfd, (char *)req.raw_data, MSG_LENGTH, MSG_WAITALL, ( struct sockaddr *) &cliaddr, &len);
 
         std::cout << "Received message of length: " << n << "\nWith the contents: ";
         std::cout.write(req.raw_data, MSG_LENGTH) << "\n";
-
-        // Teóricamente desnecessário pois a checksum considera o lixo
-        for(uint i = 0; i < MSG_LENGTH; i++){
-            reply.raw_data[i] = 0;
-        }
 
         respond(&req, &reply);
 
