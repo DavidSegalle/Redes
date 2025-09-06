@@ -136,7 +136,7 @@ bool FileManager::loadPacket(char* filename, char* area, char* index){
     }
 
     if(this->loaded_file_chunk_count < real_index){
-        // Error for asking to high of an index and return
+        return false;
     }
 
     if(real_index + 1 == this->loaded_file_chunk_count){

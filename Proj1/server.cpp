@@ -18,9 +18,10 @@ ProcessRequest processor;
 
 void respond(Message* req, Message* reply){
 
+    // Server doesn't care about invalid requests, won't reply
     if(!processor.checkChecksum(req)){
-        // Reply with received error message and return
-        processor.setChecksum(reply);
+        //return;
+        // TODO: uncomment this return
     }
 
     if(!memcmp(ClientRequests::getfile, req->type, PACKET_REQ_LENGTH)){

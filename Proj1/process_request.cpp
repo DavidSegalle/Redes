@@ -65,9 +65,12 @@ void ProcessRequest::getPacket(GetIndex* msg, SendFileData* reply){
     //memcpy(reply->filename, msg->filename, FILENAME_LENGTH);
     //reply->packet_id
 
-    if(file_manager.loadPacket(msg->filename, reply->data, msg->index)){
-        memcpy(reply->filename, msg->filename, FILENAME_LENGTH);
-        memcpy(reply->packet_id, msg->index, PACKET_ID_LENGTH);
+    // If the packet doesn't exist reply with empty filename and data
+    if(!file_manager.loadPacket(msg->filename, reply->data, msg->index)){
+        return;
     }
+
+    memcpy(reply->filename, msg->filename, FILENAME_LENGTH);
+    memcpy(reply->packet_id, msg->index, PACKET_ID_LENGTH);
 
 }

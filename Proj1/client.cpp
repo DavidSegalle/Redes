@@ -111,7 +111,7 @@ int main() {
     strncpy(message.type, "geti", PACKET_REQ_LENGTH);
     strncpy(message.get_index.filename, msg.c_str(), FILENAME_LENGTH);
 
-    uint32_t index = 1;
+    uint32_t index = 4;
     memcpy(message.get_index.index, &index, PACKET_ID_LENGTH);
     
     message.get_file.filename[FILENAME_LENGTH - 1] = '\0';
