@@ -95,6 +95,7 @@ bool FileManager::loadFile(char* filename){
     }
 
     strcpy(this->loaded_filename, filename);
+    this->last_chunk_size = size % DATA_LENGTH;
 
     std::cout << "File \"" << this->loaded_filename << "\" loaded into memory\n";
 
@@ -131,12 +132,19 @@ bool FileManager::loadPacket(char* filename, char* area, char* index){
     }
 
     if(this->loaded_file_chunk_count < real_index){
-        // Error for asking to high of an index
+        // Error for asking to high of an index and return
     }
 
-    memcpy(area, this->loaded_file + (real_index * DATA_LENGTH), DATA_LENGTH);
+    if(real_index + 1 == this->loaded_file_chunk_count){
+        memcpy(area, this->loaded_file + (real_index * DATA_LENGTH), this->last_chunk_size);
+        std::cout.write(area, this->last_chunk_size);
+    }
+    else{
+        memcpy(area, this->loaded_file + (real_index * DATA_LENGTH), DATA_LENGTH);
+        std::cout.write(area, DATA_LENGTH);
+    }
 
-    std::cout.write(area, DATA_LENGTH);
+    
     std::cout << "\n";
 
     return true;

@@ -41,6 +41,8 @@ private:
     char loaded_filename[FILENAME_LENGTH];
     uint32_t loaded_file_chunk_count;
     char full_filename[FILENAME_LENGTH + folder_len];
+
+    uint32_t last_chunk_size;
     
     char* loaded_file;
 

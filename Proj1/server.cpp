@@ -32,7 +32,6 @@ void respond(Message* req, Message* reply){
         std::cout << "Gathering a file packet\n";
         processor.getPacket(&req->get_index, &reply->send_file_data);
     }
-
     // Depois de montar a resposta colocar a checksum
     processor.setChecksum(reply);
 

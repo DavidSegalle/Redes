@@ -118,7 +118,7 @@ int main() {
 
     sendto(sockfd, &message, MSG_LENGTH, 
         MSG_CONFIRM, (const struct sockaddr *) &servaddr,  
-            sizeof(servaddr)); 
+            sizeof(servaddr));
     std::cout<<"Request for the index has been sent."<<std::endl; 
 
 
