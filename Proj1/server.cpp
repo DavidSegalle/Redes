@@ -20,8 +20,7 @@ void respond(Message* req, Message* reply){
 
     // Server doesn't care about invalid requests, won't reply
     if(!processor.checkChecksum(req)){
-        //return;
-        // TODO: uncomment this return
+        return;
     }
 
     if(!memcmp(ClientRequests::getfile, req->type, PACKET_REQ_LENGTH)){
@@ -103,6 +102,6 @@ int main() {
             len);
 
         std::cout<<"Reply sent."<<std::endl;
-    }  
+    }
     return 0; 
 }
