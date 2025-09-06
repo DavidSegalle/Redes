@@ -17,22 +17,24 @@ class FileManager{
 public:
     
     FileManager();
+
     // Server side processing
-    bool file_exists(char* filename);
-
-    std::vector<std::string> loadFileChunks(std::string filename);
-
+    
     // Tells how many chunks the file needs to be sent via the server
     void fileChunkCount(char* filename, char* chunk_count);
 
     // Returns false if file cannot be loaded
     bool loadFile(char* filename);
 
+    bool loadPacket(char* filename, char* area, char* index);
+
 private:
 
+    bool file_exists(char* filename);
     void setPacketCount(char* chunk_count, uint32_t count);
     void setFileFullName(char* filename);
 
+private:
     //files/ has 6 characters lol
     static const int folder_len = 6;
 

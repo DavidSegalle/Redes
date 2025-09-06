@@ -19,12 +19,18 @@ ProcessRequest processor;
 void respond(Message* req, Message* reply){
 
     if(!processor.checkChecksum(req)){
-        // Reply with received error message
+        // Reply with received error message and return
+        processor.setChecksum(reply);
     }
 
     if(!memcmp(ClientRequests::getfile, req->type, PACKET_REQ_LENGTH)){
-        //std::cout << "Black Magic" << std::endl;
+        std::cout << "Gathering file info\n";
         processor.getFileInfo(&req->get_file, &reply->send_file_info);
+    }
+
+    if(!memcmp(ClientRequests::getid, req->type, PACKET_REQ_LENGTH)){
+        std::cout << "Gathering a file packet\n";
+        processor.getPacket(&req->get_index, &reply->send_file_data);
     }
 
     // Depois de montar a resposta colocar a checksum

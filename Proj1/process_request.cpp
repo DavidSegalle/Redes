@@ -49,31 +49,20 @@ void ProcessRequest::getFileInfo(GetFile* msg, SendFileInfo* reply){
     
     file_manager.fileChunkCount(msg->filename, reply->packet_count);
 
-    std::cout << reply->packet_count << "\n";
-
 }
 
-std::string ProcessRequest::getPacket(std::string msg){
-    std::string req_data = msg.substr(5);
+void ProcessRequest::getPacket(GetIndex* msg, SendFileData* reply){
 
-    std::stringstream ss(req_data);
+    std::cout << "Client is requesting a packet from: " << msg->filename << "\n";
 
-    std::string filename, packet_id;
+    memcpy(reply->type, ServerResponses::packetinfo, PACKET_REQ_LENGTH);
+    
 
-    getline(ss, filename, '\n');
-    getline(ss, packet_id, '\n');
-
-    std::cout << "Received a request for packet number " << packet_id << " for the file " << filename << "\n";
-
-    if(!loaded_textfile.empty() && loaded_textfile.size() > (long unsigned int)std::stoi(packet_id)){
-        
-        // Bad code for checking if filename is bigger than packet to avoid issues
-        std::string loaded_name = loaded_textfile[0].substr(5);
-
-        if(loaded_name.size() > filename.size() && filename == loaded_textfile[0].substr(5, filename.size())){
-            return loaded_textfile[std::stoi(packet_id)];
-        }
+    //memcpy(reply->filename, msg->filename, FILENAME_LENGTH);
+    //reply->packet_id
+    if(file_manager.loadPacket(msg->filename, reply->data, msg->index)){
+        memcpy(reply->filename, msg->filename, FILENAME_LENGTH);
+        memcpy(reply->packet_id, msg->index, PACKET_ID_LENGTH);
     }
 
-    return std::string("pdat\n0\n");
 }

@@ -82,7 +82,7 @@ bool FileManager::loadFile(char* filename){
         this->loaded_file = nullptr;
     }
     
-    this->loaded_file = (char* ) malloc(size + 1);
+    this->loaded_file = (char* ) malloc(size);
 
     size_t read = fread(this->loaded_file, 1, size, fptr);
 
@@ -100,9 +100,45 @@ bool FileManager::loadFile(char* filename){
 
     this->loaded_file_chunk_count = (size / DATA_LENGTH) + 1;
     
-    std::cout << "Filesize is: " << size << " and data it takes up: " << this->loaded_file_chunk_count << " chunks\n";
-    
+    std::cout << "Filesize is: " << size << " bits and it takes up: " << this->loaded_file_chunk_count << " chunks\n";
+
     fclose(fptr);
+    return true;
+
+}
+
+bool FileManager::loadPacket(char* filename, char* area, char* index){
+
+    uint32_t real_index;
+    memcpy(&real_index, index, PACKET_ID_LENGTH);
+
+    bool loaded = true;
+
+    int correct_name = memcmp(this->loaded_filename, filename, FILENAME_LENGTH);
+
+    // If no file is loaded
+    if(!this->loaded_file){
+        loaded = this->loadFile(filename);
+    }
+    // If the loaded file is not the correct one
+    // memcmp has 0 as the result for equal value, weird
+    else if(correct_name){
+        loaded = this->loadFile(filename);
+    }
+
+    if(!loaded){
+        return false;
+    }
+
+    if(this->loaded_file_chunk_count < real_index){
+        // Error for asking to high of an index
+    }
+
+    memcpy(area, this->loaded_file + (real_index * DATA_LENGTH), DATA_LENGTH);
+
+    std::cout.write(area, DATA_LENGTH);
+    std::cout << "\n";
+
     return true;
 
 }

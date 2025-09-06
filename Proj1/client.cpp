@@ -98,19 +98,32 @@ int main() {
     for(int i = 0; i < MAXLINE; i++){
         buffer[i] = '\0';
     }
-    /*packet = "getitest.txt0";
-    sendto(sockfd, (const char *)packet.data(), packet.length(), 
+
+
+
+
+
+
+    for(uint i = 0; i < MSG_LENGTH; i++){
+        message.raw_data[i] = '\0';
+    }
+
+    strncpy(message.type, "geti", PACKET_REQ_LENGTH);
+    strncpy(message.get_index.filename, msg.c_str(), FILENAME_LENGTH);
+
+    uint32_t index = 1;
+    memcpy(message.get_index.index, &index, PACKET_ID_LENGTH);
+    
+    message.get_file.filename[FILENAME_LENGTH - 1] = '\0';
+
+    sendto(sockfd, &message, MSG_LENGTH, 
         MSG_CONFIRM, (const struct sockaddr *) &servaddr,  
             sizeof(servaddr)); 
-    std::cout<<"Request for the packet has been sent."<<std::endl; 
-          
-    // Colocar timeout aqui
-    n = recvfrom(sockfd, (char *)buffer, MAXLINE,  
-                MSG_WAITALL, (struct sockaddr *) &servaddr, 
-                &len); 
-    buffer[n] = '\0';
-    std::cout<<"Server :"<<buffer<<std::endl;
-  
-    close(sockfd); */
+    std::cout<<"Request for the index has been sent."<<std::endl; 
+
+
+
+    close(sockfd);
+
     return 0; 
 }
