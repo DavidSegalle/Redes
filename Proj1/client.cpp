@@ -36,7 +36,7 @@ int main() {
     Message message;
 
     // Remember to clear the message
-    for(int i = 0; i < MSG_LENGTH; i++){
+    for(uint i = 0; i < MSG_LENGTH; i++){
         message.raw_data[i] = '\0';
     }
 

@@ -86,7 +86,7 @@ int main() {
     
     Message req, reply;
     // Remember to clear the message
-    for(int i = 0; i < MSG_LENGTH; i++){
+    for(uint i = 0; i < MSG_LENGTH; i++){
         req.raw_data[i] = '\0';
         reply.raw_data[i] = '\0';
     }
@@ -99,7 +99,7 @@ int main() {
         std::cout.write(req.raw_data, MSG_LENGTH) << "\n";
 
         // Teóricamente desnecessário pois a checksum considera o lixo
-        for(int i = 0; i < MSG_LENGTH; i++){
+        for(uint i = 0; i < MSG_LENGTH; i++){
             reply.raw_data[i] = 0;
         }
 

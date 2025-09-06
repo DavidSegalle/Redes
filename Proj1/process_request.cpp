@@ -8,7 +8,7 @@ void ProcessRequest::setChecksum(Message* msg){
 
     uint32_t checksum = 0;
 
-    for(int i = 0; i < MSG_LENGTH - CHECKSUM_LENGTH; i++){
+    for(uint i = 0; i < MSG_LENGTH - CHECKSUM_LENGTH; i++){
         checksum += msg->raw_data[i];
     }
 

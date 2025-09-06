@@ -4,11 +4,11 @@
 
 FileManager::FileManager(){
 
-    for(int i = 0; i < FILENAME_LENGTH; i++){
+    for(uint i = 0; i < FILENAME_LENGTH; i++){
         this->loaded_filename[i] = 0;
     }
 
-    for(int i = 0; i < FILENAME_LENGTH + this->folder_len; i++){
+    for(uint i = 0; i < FILENAME_LENGTH + this->folder_len; i++){
         this->full_filename[i] = 0;
     }
 
@@ -86,7 +86,7 @@ bool FileManager::loadFile(char* filename){
 
     size_t read = fread(this->loaded_file, 1, size, fptr);
 
-    if (read != size) {
+    if (read != (size_t)size) {
         std::cout << "Issues with the size of the file when loading\n";
         free(this->loaded_file);
         this->loaded_file = nullptr;
