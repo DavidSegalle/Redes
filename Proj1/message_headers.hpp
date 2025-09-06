@@ -6,7 +6,7 @@ constexpr unsigned CHECKSUM_LENGTH   = 4;
 constexpr unsigned PACKET_ID_LENGTH  = 4;
 constexpr unsigned FILENAME_LENGTH   = 64;
 
-constexpr unsigned DATA_LENGTH = MSG_LENGTH - PACKET_REQ_LENGTH - FILENAME_LENGTH - CHECKSUM_LENGTH;
+constexpr unsigned DATA_LENGTH = MSG_LENGTH - PACKET_REQ_LENGTH - FILENAME_LENGTH - CHECKSUM_LENGTH - PACKET_ID_LENGTH;
 /** 
 Each request and response has an associated struct which occuppies 1024 bytes and is stored in a Union to be interpreted as needed.
  */
