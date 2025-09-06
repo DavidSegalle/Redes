@@ -22,15 +22,24 @@ public:
 
     std::vector<std::string> loadFileChunks(std::string filename);
 
-    std::string getChecksum(std::string text_block);
-
-    std::string packetToString(int i);
-
+    // Tells how many chunks the file needs to be sent via the server
     void fileChunkCount(char* filename, char* chunk_count);
 
+    // Returns false if file cannot be loaded
+    bool loadFile(char* filename);
+
 private:
-    std::string loadFile(std::string filename);
 
     void setPacketCount(char* chunk_count, uint32_t count);
+    void setFileFullName(char* filename);
+
+    //files/ has 6 characters lol
+    static const int folder_len = 6;
+
+    char loaded_filename[FILENAME_LENGTH];
+    uint32_t loaded_file_chunk_count;
+    char full_filename[FILENAME_LENGTH + folder_len];
+    
+    char* loaded_file;
 
 };

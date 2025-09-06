@@ -8,15 +8,20 @@ union Student {
     char firstLetter;
 };
 
-int main() {
-    
-    char* teste[4];
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
 
-    for(int i =0; i < 4; i++){
-        teste[i] = 0;
+void printBinary(uint32_t n) {
+    for (int i = 31; i >= 0; i--) {
+        printf("%d", (n >> i) & 1);
+        if (i == 31 || i == 23) printf(" "); // separate sign, exponent, mantissa
     }
+    printf("\n");
+}
 
-    printf("%d", teste[0]);
+int main() {
+    int teste = 3;
 
-    return 0;
+    printf("%b", teste);
 }

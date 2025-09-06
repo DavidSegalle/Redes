@@ -1,12 +1,12 @@
 #pragma once
 
-#define MSG_LENGTH 1024
-#define PACKET_REQ_LENGTH 4
-#define CHECKSUM_LENGTH 4
-#define PACKET_ID_LENGTH 4
-#define FILENAME_LENGTH 64
-#define DATA_LENGTH MSG_LENGTH - PACKET_REQ_LENGTH - FILENAME_LENGTH - CHECKSUM_LENGTH
+constexpr unsigned MSG_LENGTH        = 1024;
+constexpr unsigned PACKET_REQ_LENGTH = 4;
+constexpr unsigned CHECKSUM_LENGTH   = 4;
+constexpr unsigned PACKET_ID_LENGTH  = 4;
+constexpr unsigned FILENAME_LENGTH   = 64;
 
+constexpr unsigned DATA_LENGTH = MSG_LENGTH - PACKET_REQ_LENGTH - FILENAME_LENGTH - CHECKSUM_LENGTH;
 /** 
 Each request and response has an associated struct which occuppies 1024 bytes and is stored in a Union to be interpreted as needed.
  */
