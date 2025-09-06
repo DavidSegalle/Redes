@@ -47,6 +47,7 @@ typedef struct {
     char type[PACKET_REQ_LENGTH];
     char filename[FILENAME_LENGTH];
     char packet_count[PACKET_ID_LENGTH];
+    char last_chunk_size[PACKET_ID_LENGTH];
     char checksum[CHECKSUM_LENGTH];
 
 }SendFileInfo;

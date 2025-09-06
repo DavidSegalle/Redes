@@ -35,6 +35,9 @@ void respond(Message* req, Message* reply){
     // Depois de montar a resposta colocar a checksum
     processor.setChecksum(reply);
 
+    std::cout << "Full server message is:\n";
+    std::cout.write(reply->raw_data, MSG_LENGTH);
+
     /*strncpy(req_type, msg, PACKET_REQ_LENGTH);
 
     std::cout << "Received a request of type: " << req_type << "\n";

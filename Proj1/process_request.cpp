@@ -49,6 +49,10 @@ void ProcessRequest::getFileInfo(GetFile* msg, SendFileInfo* reply){
     
     file_manager.fileChunkCount(msg->filename, reply->packet_count);
 
+    uint32_t final_chunk_size = file_manager.getLastChunkSize();
+
+    memcpy(reply->last_chunk_size, &final_chunk_size, PACKET_ID_LENGTH);
+
 }
 
 void ProcessRequest::getPacket(GetIndex* msg, SendFileData* reply){

@@ -28,6 +28,8 @@ public:
 
     bool loadPacket(char* filename, char* area, char* index);
 
+    uint32_t getLastChunkSize();
+
 private:
 
     bool file_exists(char* filename);

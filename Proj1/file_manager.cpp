@@ -17,6 +17,10 @@ FileManager::FileManager(){
 
 }
 
+uint32_t FileManager::getLastChunkSize(){
+    return this->last_chunk_size;
+}
+
 void FileManager::setPacketCount(char* chunk_count, uint32_t count){
     memcpy(chunk_count, &count, PACKET_ID_LENGTH);
 }
@@ -137,11 +141,11 @@ bool FileManager::loadPacket(char* filename, char* area, char* index){
 
     if(real_index + 1 == this->loaded_file_chunk_count){
         memcpy(area, this->loaded_file + (real_index * DATA_LENGTH), this->last_chunk_size);
-        std::cout.write(area, this->last_chunk_size);
+        //std::cout.write(area, this->last_chunk_size);
     }
     else{
         memcpy(area, this->loaded_file + (real_index * DATA_LENGTH), DATA_LENGTH);
-        std::cout.write(area, DATA_LENGTH);
+        //std::cout.write(area, DATA_LENGTH);
     }
 
     
