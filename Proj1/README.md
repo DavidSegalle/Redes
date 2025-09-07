@@ -6,13 +6,13 @@
 
 If checksum is invalid server simply won't respond.
 
-If a request is made for an invalid filename the server will respond with a message with empty filename.
+If a request is made for an invalid filename the server will respond with file has the size 0 chunks.
 
 If a request is made for an invalid index of a file (file isn't big enough for the index) server will respond with empty filename and data fields.
 
 ### Client side
 
-Not implemented.
+The client connects to a ip:socket and requests for a file. If the file exists it than asks for each packet of data of the file. If the request fails it may try 5 times, with a one second timeout.
 
 ## Message
 
