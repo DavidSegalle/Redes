@@ -30,8 +30,8 @@ typedef struct {
 NetworkClient parse_input(){
     std::string input, ip, port, msg;
     // TODO: UNCOMMENT
-    //getline(std::cin, input); // Defaults to stop at newline
-    input = "127.0.0.1:8080/IEEEtran_HOWTO.pdf";
+    getline(std::cin, input); // Defaults to stop at newline
+    //input = "127.0.0.1:8080/test.txt";
     
     stringstream ss(input);
 

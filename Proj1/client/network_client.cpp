@@ -135,7 +135,11 @@ void NetworkClient::sendMsg(Message* message, Message* response){
     socklen_t len;
     int n;
 
-    for(int i = 0; i < 5; i++){
+    for(int i = 0; (i < 5); i++){
+
+        std::cout << "Message being sent to server: ";
+        std::cout.write(message->raw_data, MSG_LENGTH);
+        std::cout << "\n";
 
         sendto(sockfd, message, MSG_LENGTH, MSG_CONFIRM, (const struct sockaddr *) &servaddr, sizeof(servaddr)); 
         
