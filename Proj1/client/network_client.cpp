@@ -126,8 +126,6 @@ void NetworkClient::requestFile(Message* msg, Message* response){
 
     this->file_manager->saveFile();
 
-    // Save file
-
 }
 
 void NetworkClient::sendMsg(Message* message, Message* response){
