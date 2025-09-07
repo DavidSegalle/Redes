@@ -6,7 +6,7 @@
 #include <string.h>
 
 #include "file_manager.hpp"
-#include "message_headers.hpp"
+#include "../message_headers.hpp"
 
 class ProcessRequest{
 
@@ -18,16 +18,10 @@ public:
     void getPacket(GetIndex* msg, SendFileData* reply);
     //std::string getChecksum (std::string msg);
 
-    // Client side processing
-    std::string rcvFileInfo     (std::string msg);
-    std::string rcvPacketData (std::string msg);
-    std::string rcvChecksum  (std::string msg);
-
     void setChecksum(Message* msg);
     bool checkChecksum(Message* msg);
 
 private:
-    std::vector<std::string> loaded_textfile;
 
     FileManager file_manager;
 

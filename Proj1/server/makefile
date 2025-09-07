@@ -6,14 +6,9 @@ SRCS := $(wildcard *.cpp)
 
 # Exclude files depending on the target
 SERVER_SRCS := $(filter-out client.cpp,$(SRCS))
-CLIENT_SRCS := $(filter-out server.cpp,$(SRCS))
-
-all: server client
+all: server
 
 server: $(SERVER_SRCS)
-	$(CXX) $(CXXFLAGS) $^ -o $(@).o
-
-client: $(CLIENT_SRCS)
 	$(CXX) $(CXXFLAGS) $^ -o $(@).o
 
 clean:
