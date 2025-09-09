@@ -7,7 +7,7 @@ ProcessRequest::ProcessRequest(int client_socket){
         this->request.raw_data[i] = 0;
         this->response.raw_data[i] = 0;
     }
-    
+
 }
 
 ProcessRequest::~ProcessRequest(){
@@ -27,6 +27,7 @@ void ProcessRequest::mainLoop(){
 
         int received = 0;
         while(received < MSG_LENGTH){
+            std::cout << "test\n";
             bytes_received = recv(this->client_socket, this->request.raw_data + received, MSG_LENGTH - received, 0);
             received += bytes_received;
         }
