@@ -6,8 +6,20 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include "file_manager.hpp"
+
 int main()
 {
+
+    FileManager fm;
+
+    char text[] = "1234567890";
+    char sha[32];
+
+    std::cout << fm.checkSha(text, 10, sha) << "\n";
+
+    fm.saveFile("test.txt", text, 10);
+
     /*// creating socket
     int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
 
