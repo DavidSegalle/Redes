@@ -3,6 +3,9 @@
 #include <iostream>
 #include <string.h>
 
+#include <openssl/sha.h>
+#include <openssl/evp.h>
+
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -22,9 +25,10 @@ public:
 
 private:
 
+    void receiveBytes(char* data, int size);
+
     void getFileInfo();
     void getPacket();
-    //std::string getChecksum (std::string msg);
 
     void setChecksum(Message* msg);
     bool checkChecksum(Message* msg);
@@ -36,5 +40,7 @@ private:
     int client_socket;
 
     Message request, response;
+
+    char request_type[PACKET_REQ_LENGTH];
 
 };

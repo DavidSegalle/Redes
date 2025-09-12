@@ -13,12 +13,10 @@ Each request and response has an associated struct which occuppies 1024 bytes an
 
 namespace ClientRequests {
     inline constexpr const char* getfile = "getf";
-    inline constexpr const char* getid = "geti";
 }
 
 namespace ServerResponses {
-    inline constexpr const char* packetinfo = "pinf";
-    inline constexpr const char* packetdata = "pdat";
+    inline constexpr const char* sendfile = "senf";
 }
 
 // Ask the server for info on filename
@@ -26,7 +24,6 @@ typedef struct {
 
     char type[PACKET_REQ_LENGTH];
     char filename[FILENAME_LENGTH];
-    char checksum[CHECKSUM_LENGTH];
 
 }GetFile;
 
@@ -37,38 +34,14 @@ typedef struct {
     char filename[FILENAME_LENGTH];
     char index[PACKET_ID_LENGTH];
 
-}GetIndex;
-
-// Server response with the number of packets that the file fits into
-typedef struct {
-
-    char type[PACKET_REQ_LENGTH];
-    char filename[FILENAME_LENGTH];
-    char packet_count[PACKET_ID_LENGTH];
-    char last_chunk_size[PACKET_ID_LENGTH];
-
-}SendFileInfo;
-
-// Server response with the nth packet of data for filename
-typedef struct {
-
-    char type[PACKET_REQ_LENGTH];
-    char filename[FILENAME_LENGTH];
-    char packet_id[PACKET_ID_LENGTH];
-    char data[DATA_LENGTH];
-
-}SendFileData;
-
+}SendFile;
 
 typedef union {
 
     char type[PACKET_REQ_LENGTH];
 
     GetFile get_file;
-    GetIndex get_index;
-
-    SendFileInfo send_file_info;
-    SendFileData send_file_data;
+    SendFile send_file;
 
     char raw_data[MSG_LENGTH];
 }Message;

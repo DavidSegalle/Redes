@@ -32,8 +32,8 @@ public:
 
     bool fileExists(char* filename);
     int getFileSize();
-    bool loadFile(char* file, int size);
-    bool calculateSha(char* file, int size, char sha[SHA256_DIGEST_LENGTH]);
+    bool saveFile(char* file, int size);
+    bool checkSha(char* file, int size, char sha[SHA256_DIGEST_LENGTH]);
 
 private:
 

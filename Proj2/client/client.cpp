@@ -8,7 +8,7 @@
 
 int main()
 {
-    // creating socket
+    /*// creating socket
     int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
 
     // specifying address
@@ -26,7 +26,7 @@ int main()
     send(clientSocket, message, strlen(message), 0);
 
     // closing socket
-    close(clientSocket);
+    close(clientSocket);*/
 
     return 0;
 }

@@ -23,9 +23,42 @@ void ProcessRequest::mainLoop(){
             this->response.raw_data[i] = 0;
         }
 
-        int bytes_received = 0;
+        this->receiveBytes(this->request_type, PACKET_REQ_LENGTH);
 
-        int received = 0;
+        if(strncmp(this->request_type, ClientRequests::getfile, PACKET_REQ_LENGTH)){
+            char filename[FILENAME_LENGTH];
+            
+            this->receiveBytes(filename, FILENAME_LENGTH);
+
+            if(!file_manager.fileExists(filename)){
+                // Responder com arquivo não existe
+            }
+
+            char response_type[PACKET_REQ_LENGTH];
+            
+            memcpy(response_type, ServerResponses::sendfile, PACKET_REQ_LENGTH);
+            
+            int size = file_manager.getFileSize();
+
+            char* file = new char[size];
+
+            file_manager.loadFile(file, size);
+
+            char checksum[SHA256_DIGEST_LENGTH];
+            file_manager.calculateSha(file, size, checksum);
+
+            // Send to client
+            send(this->client_socket,  &response_type,  PACKET_REQ_LENGTH,     0);
+            send(this->client_socket,  &filename,       FILENAME_LENGTH,       0);
+            send(this->client_socket,  (char*) &size,   4,                     0);
+            send(this->client_socket,  file,            size,                  0);
+            send(this->client_socket,  checksum,        SHA256_DIGEST_LENGTH,  0);
+
+            delete file;
+
+        }
+
+        /*int received = 0;
         while(received < MSG_LENGTH){
             std::cout << "test\n";
             bytes_received = recv(this->client_socket, this->request.raw_data + received, MSG_LENGTH - received, 0);
@@ -54,7 +87,7 @@ void ProcessRequest::mainLoop(){
             this->getPacket();
         }
 
-        // Depois de montar a resposta colocar a checksum
+        */
 
         std::cout << "Full server message is:\n";
         std::cout.write(this->response.raw_data, MSG_LENGTH);
@@ -71,7 +104,20 @@ void ProcessRequest::getPacket(){
 
 }
 
-void ProcessRequest::getFileInfo(){
+void ProcessRequest::receiveBytes(char* data, int size){
+    
+    int received = 0;
+    int bytes_received = 0;
+
+    while(received < size){
+        std::cout << "test\n";
+        bytes_received = recv(this->client_socket, data + received, size - received, 0);
+        received += bytes_received;
+    }
+
+}
+
+/*void ProcessRequest::getFileInfo(){
 
     GetFile* msg = &this->request.get_file;
     SendFileInfo* reply = &this->response.send_file_info;
@@ -95,4 +141,4 @@ void ProcessRequest::getFileInfo(){
     uint32_t final_chunk_size = file_manager.getLastChunkSize();
     memcpy(reply->last_chunk_size, &final_chunk_size, PACKET_ID_LENGTH);
 
-}
+}*/
