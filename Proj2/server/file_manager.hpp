@@ -30,15 +30,16 @@ public:
     FileManager();
     ~FileManager();
 
-    bool fileExists(char* filename);
+    bool fileExists(FileName* filename);
     int getFileSize();
     bool loadFile(char* file, int size);
     bool calculateSha(char* file, int size, char sha[SHA256_DIGEST_LENGTH]);
 
 private:
 
-    void setFileFullName(char* filename);
+    void setFileFullName(FileName* filename);
 
-    char full_filename[MSG_LENGTH + 6];
+    char* full_filename;
+    int full_name_size;
 
 };

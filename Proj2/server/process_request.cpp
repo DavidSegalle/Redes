@@ -2,143 +2,130 @@
 
 ProcessRequest::ProcessRequest(int client_socket){
     this->client_socket = client_socket;
-
-    for(int i = 0; i < MSG_LENGTH; i++){
-        this->request.raw_data[i] = 0;
-        this->response.raw_data[i] = 0;
-    }
-
 }
 
 ProcessRequest::~ProcessRequest(){
-
+    
 }
 
 void ProcessRequest::mainLoop(){
 
     while(true){
 
-        for(int i = 0; i < MSG_LENGTH; i++){
-            this->request.raw_data[i] = 0;
-            this->response.raw_data[i] = 0;
+        if(!this->receiveBytes(this->request_type, PACKET_REQ_LENGTH)){
+            std::cout << "What\n";
+            return;
         }
+        
 
-        this->receiveBytes(this->request_type, PACKET_REQ_LENGTH);
-
-        if(strncmp(this->request_type, ClientRequests::getfile, PACKET_REQ_LENGTH)){
-            char filename[FILENAME_LENGTH];
+        if(!strncmp(this->request_type, ClientRequests::getfile, NUMBER_LENGTH)){
+            std::cout << "Received request for a file\n";
             
-            this->receiveBytes(filename, FILENAME_LENGTH);
-
-            if(!file_manager.fileExists(filename)){
-                // Responder com arquivo não existe
+            char name_len[NUMBER_LENGTH];
+            
+            if(!this->receiveBytes(name_len, NUMBER_LENGTH)){
+                return;
             }
 
-            char response_type[PACKET_REQ_LENGTH];
+            FileName filename;
+            memcpy(&filename.size, name_len, NUMBER_LENGTH);
+
+            filename.name = new char[filename.size];
+
+            if(!this->receiveBytes(filename.name, filename.size)){
+                return;
+            }
+            if(filename.name[filename.size - 1] != '\0'){
+                std::cout << "received an invalid filename\n";
+                this->closeConnection();
+                delete filename.name;
+                return;
+            }
             
-            memcpy(response_type, ServerResponses::sendfile, PACKET_REQ_LENGTH);
+            std::cout << "Requested filename is: ";
+            std::cout << filename.name;
+            std::cout << "\n";
+
+            if(!file_manager.fileExists(&filename)){
+                // Responder com arquivo não existe
+                
+                // Limpar o buffer de recv
+
+                delete filename.name;
+                continue;
+            }
             
             int size = file_manager.getFileSize();
-
             char* file = new char[size];
-
             file_manager.loadFile(file, size);
 
             char checksum[SHA256_DIGEST_LENGTH];
             file_manager.calculateSha(file, size, checksum);
 
-            // Send to client
-            send(this->client_socket,  &response_type,  PACKET_REQ_LENGTH,     0);
-            send(this->client_socket,  &filename,       FILENAME_LENGTH,       0);
-            send(this->client_socket,  (char*) &size,   4,                     0);
-            send(this->client_socket,  file,            size,                  0);
-            send(this->client_socket,  checksum,        SHA256_DIGEST_LENGTH,  0);
-
+            char response_type[PACKET_REQ_LENGTH];
+            memcpy(response_type, ServerResponses::sendfile, PACKET_REQ_LENGTH);
+            
+            this->sendBytes(this->client_socket, response_type, PACKET_REQ_LENGTH);
+            this->sendBytes(this->client_socket, checksum, SHA256_DIGEST_LENGTH);
+            this->sendBytes(this->client_socket, reinterpret_cast<char*>(&size), NUMBER_LENGTH);
+            this->sendBytes(this->client_socket, file, size);
+            
+            delete filename.name;
             delete file;
 
         }
 
-        /*int received = 0;
-        while(received < MSG_LENGTH){
-            std::cout << "test\n";
-            bytes_received = recv(this->client_socket, this->request.raw_data + received, MSG_LENGTH - received, 0);
-            received += bytes_received;
-        }
-
-        if(!bytes_received){
-            std::cout << "Client shutdown the connection\n";
-            this->closeConnection();
-            return;
-        }
-        else if (bytes_received != MSG_LENGTH){
-            std::cout << "Received wrong sized packet, closing connection\n";
-            this->closeConnection();
-            return;
-        }
-
-        // Creating the response
-        if(!memcmp(ClientRequests::getfile, this->request.type, PACKET_REQ_LENGTH)){
-            std::cout << "Gathering file info\n";
-            this->getFileInfo();
-        }
-
-        if(!memcmp(ClientRequests::getid, this->request.type, PACKET_REQ_LENGTH)){
-            std::cout << "Gathering a file packet\n";
-            this->getPacket();
-        }
-
-        */
-
-        std::cout << "Full server message is:\n";
-        std::cout.write(this->response.raw_data, MSG_LENGTH);
+        std::cout << "Full server message is:(still not printing)\n";
 
     }
 }
 
 void ProcessRequest::closeConnection(){
+
+    this->connection = false;
+    std::cout << "Closing connection with " << this->client_socket << "\n";
     close(this->client_socket);
     return;
+
 }
 
 void ProcessRequest::getPacket(){
 
 }
 
-void ProcessRequest::receiveBytes(char* data, int size){
+bool ProcessRequest::receiveBytes(char* data, int size){
     
     int received = 0;
     int bytes_received = 0;
+    std::cout << "Receiving bytes:\n";
 
     while(received < size){
-        std::cout << "test\n";
         bytes_received = recv(this->client_socket, data + received, size - received, 0);
         received += bytes_received;
+        if(bytes_received <= 0){
+            this->closeConnection();
+            return false;
+            std::cout << received << "\n";
+        }
+        std::cout.write(data, size);
+        std::cout << "\n";
     }
-
+    std::cout << "Done receiving bytes\n";
+    return true;
 }
 
-/*void ProcessRequest::getFileInfo(){
-
-    GetFile* msg = &this->request.get_file;
-    SendFileInfo* reply = &this->response.send_file_info;
-
-    std::cout << "Requested filename is: " << msg->filename << "\n";
-
-    // Set the data that won't change type to sending info on a packet
-    memcpy(reply->type, ServerResponses::packetinfo, PACKET_REQ_LENGTH);
-    memcpy(reply->filename, msg->filename, FILENAME_LENGTH);
-    
-    if(!file_manager.fileExists(msg->filename)){
-        std::cout << "Requested file does not exist\n";
-        return;
+bool ProcessRequest::sendBytes(int sock, char* buf, int len){
+    int total = 0;
+    while (total < len) {
+        std::cout << "I am here\n";
+        int sent = send(sock, buf + total, len - total, 0);
+        std::cout << "I am here\n";
+        std::cout << sent << "\n";
+        if (sent <= 0){
+            return false;
+        }
+        
+        total += sent;
     }
-
-    std::cout << "Requested file exists, sending file information\n";
-
-    int chunk_count = file_manager.getFileChunkCount(msg->filename);
-    memcpy(reply->packet_count, &chunk_count, PACKET_ID_LENGTH);
-
-    uint32_t final_chunk_size = file_manager.getLastChunkSize();
-    memcpy(reply->last_chunk_size, &final_chunk_size, PACKET_ID_LENGTH);
-
-}*/
+    return true;
+}

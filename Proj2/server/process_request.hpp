@@ -14,6 +14,8 @@
 #include "file_manager.hpp"
 #include "../message_headers.hpp"
 
+
+
 class ProcessRequest{
 
 public:
@@ -25,22 +27,22 @@ public:
 
 private:
 
-    void receiveBytes(char* data, int size);
+    bool sendBytes(int sock, char* buf, int len);
+    bool receiveBytes(char* data, int size);
 
     void getFileInfo();
     void getPacket();
 
-    void setChecksum(Message* msg);
-    bool checkChecksum(Message* msg);
-
     void closeConnection();
+
+private:
 
     FileManager file_manager;
 
     int client_socket;
 
-    Message request, response;
+    char request_type[NUMBER_LENGTH];
 
-    char request_type[PACKET_REQ_LENGTH];
+    bool connection;
 
 };

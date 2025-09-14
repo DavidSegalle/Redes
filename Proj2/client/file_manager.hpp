@@ -35,4 +35,9 @@ public:
 
 private:
 
+    void setFileFullName(FileName* filename);
+
+    char* full_filename;
+    int full_name_size;
+
 };

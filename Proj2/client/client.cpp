@@ -5,20 +5,44 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <sstream>
 
 #include "file_manager.hpp"
+#include "network_client.hpp"
+
+NetworkClient parse_input(){
+    std::string input, ip, port, msg;
+    // TODO: UNCOMMENT
+    //getline(std::cin, input); // Defaults to stop at newline
+    input = "127.0.0.1:8080/test.txt";
+    
+    std::stringstream ss(input);
+
+    getline(ss, ip, ':');
+    getline(ss, port, '/');
+    getline(ss, msg);
+
+    if(!(ip.length() && port.length() && msg.length())){
+        std::cout << "Found empty value from\nIP: " << ip << "\nPort: " << port <<"\nfile: " << msg << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    return NetworkClient(ip, port, msg);
+}
 
 int main()
 {
 
-    FileManager fm;
+    /*FileManager fm;
 
     char text[] = "1234567890";
     char sha[32];
 
     std::cout << fm.checkSha(text, 10, sha) << "\n";
 
-    fm.saveFile("test.txt", text, 10);
+    fm.saveFile("test.txt", text, 10);*/
+
+    NetworkClient connection = parse_input();
 
     /*// creating socket
     int clientSocket = socket(AF_INET, SOCK_STREAM, 0);

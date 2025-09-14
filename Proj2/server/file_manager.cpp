@@ -1,8 +1,14 @@
 #include "file_manager.hpp"
 
-FileManager::FileManager(){}
+FileManager::FileManager(){
+    this->full_filename = nullptr;
+}
 
-FileManager::~FileManager(){}
+FileManager::~FileManager(){
+    if(this->full_filename){
+        delete this->full_filename;
+    }
+}
 
 bool FileManager::calculateSha(char* file, int size, char sha[SHA256_DIGEST_LENGTH]){
 
@@ -35,14 +41,18 @@ bool FileManager::calculateSha(char* file, int size, char sha[SHA256_DIGEST_LENG
 
 }
 
-void FileManager::setFileFullName(char* filename){
+void FileManager::setFileFullName(FileName* filename){
+
+    this->full_name_size = filename->size + 6;
+
+    this->full_filename = new char[this->full_name_size];
 
     strcpy(this->full_filename, "files/");
-    strcpy(this->full_filename + 6, filename);
+    strcpy(this->full_filename + 6, filename->name);
 
 }
 
-bool FileManager::fileExists(char* filename){
+bool FileManager::fileExists(FileName* filename){
 
     this->setFileFullName(filename);
 
