@@ -44,6 +44,8 @@ int main()
 
     NetworkClient connection = parse_input();
 
+    connection.mainLoop();
+
     /*// creating socket
     int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
 

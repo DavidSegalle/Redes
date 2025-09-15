@@ -17,5 +17,15 @@ public:
 
 private:
 
+    bool receiveBytes(char* data, int size);
+    bool sendBytes(int sock, char* buf, int len);
+
+    bool request_file(FileName* filename);
+    void closeConnection();
+
+    bool connection;
+    int server_socket;
+
+    FileManager file_manager;
 
 };

@@ -117,15 +117,16 @@ bool ProcessRequest::receiveBytes(char* data, int size){
 bool ProcessRequest::sendBytes(int sock, char* buf, int len){
     int total = 0;
     while (total < len) {
-        std::cout << "I am here\n";
+
         int sent = send(sock, buf + total, len - total, 0);
-        std::cout << "I am here\n";
         std::cout << sent << "\n";
+        
         if (sent <= 0){
             return false;
         }
         
         total += sent;
+
     }
     return true;
 }

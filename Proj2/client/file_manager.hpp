@@ -30,7 +30,7 @@ public:
     FileManager();
     ~FileManager();
 
-    void saveFile(char* filename, char* file, int size);
+    void saveFile(FileName* filename, char* file, int size);
     bool checkSha(char* file, int size, char sha[SHA256_DIGEST_LENGTH]);
 
 private:

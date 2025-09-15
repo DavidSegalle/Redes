@@ -3,11 +3,11 @@
 FileManager::FileManager(){}
 FileManager::~FileManager(){}
 
-void FileManager::saveFile(char* filename, char* file, int size){
+void FileManager::saveFile(FileName* filename, char* file, int size){
 
     char *full_filename;
 
-    int full_size = size + 7;
+    int full_size = filename->size + 7;
 
     full_filename = new char[full_size];
     for(int i = 0; i < full_size + 1; i++){
@@ -15,7 +15,7 @@ void FileManager::saveFile(char* filename, char* file, int size){
     }
 
     strcpy(full_filename, "files/");
-    strncpy(full_filename + 6, filename, full_size);
+    strncpy(full_filename + 6, filename->name, full_size);
 
     FILE* fptr = fopen(full_filename, "w");
 

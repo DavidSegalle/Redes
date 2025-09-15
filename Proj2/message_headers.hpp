@@ -20,5 +20,6 @@ namespace ClientRequests {
 
 namespace ServerResponses {
     inline constexpr const char* sendfile = "senf";
+    inline constexpr const char* fileerror = "fier";
 }
 
